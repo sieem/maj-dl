@@ -1,4 +1,5 @@
-import * as fs from 'fs';
+import { createWriteStream } from 'fs';
+import { get } from 'https';
 import * as ytdl from 'ytdl-core';
 import { google } from 'googleapis';
 import * as dotenv from 'dotenv';
@@ -20,8 +21,6 @@ const youtube = google.youtube('v3');
         // try to take the biggest one and go down from there
         const thumbnailUrl = thumbnails.maxres?.url || thumbnails.high?.url || thumbnails.medium?.url || thumbnails.standard?.url || thumbnails.default?.url;
 
-        console.log(thumbnailUrl);
-
         const info = await ytdl.getInfo(videoId);
         const audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
         let highestBitrate = 0;
@@ -35,9 +34,11 @@ const youtube = google.youtube('v3');
             }
         }
 
-        const tempFilename = `./tmp/audio.${mimeTypeToDownload.includes('webm') ? 'opus' : 'mp4a'}`;
+        const tempAudioPath = `./tmp/${videoId}.${mimeTypeToDownload.includes('webm') ? 'opus' : 'mp4a'}`;
+        const tempThumbnailPath = `./tmp/${videoId}_thumb.jpg`;
 
-        const writeStream = fs.createWriteStream(tempFilename);
+        get(thumbnailUrl, res => res.pipe(createWriteStream(tempThumbnailPath)))
+        const writeStream = createWriteStream(tempAudioPath);
 
         writeStream.on('finish', function () {
             console.log('done');
