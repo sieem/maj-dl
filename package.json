@@ -22,7 +22,9 @@
   "homepage": "https://github.com/sieem/maj-dl#readme",
   "dependencies": {
     "dotenv": "^8.2.0",
+    "ffmetadata": "^1.6.0",
     "googleapis": "^56.0.0",
+    "moment": "^2.27.0",
     "ytdl-core": "^3.1.2"
   },
   "devDependencies": {
