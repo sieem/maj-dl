@@ -1,0 +1,25 @@
+{
+  "name": "maj-dl",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sieem/maj-dl.git"
+  },
+  "keywords": [
+    "youtube-dl"
+  ],
+  "author": "Siem Lasseel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sieem/maj-dl/issues"
+  },
+  "homepage": "https://github.com/sieem/maj-dl#readme",
+  "dependencies": {
+    "ytdl-core": "^3.1.2"
+  }
+}
