@@ -10,6 +10,7 @@ config();
 
 // initialize the Youtube API library
 const youtube = google.youtube('v3');
+const minimumLength = 20 * 60;
 
 (async () => {
     const { data: { items } } = await youtube.search.list({
@@ -24,8 +25,12 @@ const youtube = google.youtube('v3');
         // try to take the biggest one and go down from there
         const thumbnailUrl = thumbnails.maxres?.url || thumbnails.high?.url || thumbnails.medium?.url || thumbnails.standard?.url || thumbnails.default?.url;
 
-        const info = await ytdl.getInfo(videoId);
-        const audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
+        const { formats, length_seconds } = await ytdl.getInfo(videoId);
+        if (Number.parseInt(length_seconds) < minimumLength) {
+            continue;
+        }
+
+        const audioFormats = ytdl.filterFormats(formats, 'audioonly');
         let highestBitrate = 0;
         let qualityToDownload = 0;
         let mimeTypeToDownload = '';
