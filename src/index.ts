@@ -4,7 +4,6 @@ import { google } from 'googleapis';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-
 // initialize the Youtube API library
 const youtube = google.youtube('v3');
 
@@ -36,10 +35,15 @@ const youtube = google.youtube('v3');
             }
         }
 
-        const tempFilename = `tmp/audio.${mimeTypeToDownload.includes('webm') ? 'opus' : 'mp4a'}`;
+        const tempFilename = `./tmp/audio.${mimeTypeToDownload.includes('webm') ? 'opus' : 'mp4a'}`;
 
+        const writeStream = fs.createWriteStream(tempFilename);
+
+        writeStream.on('finish', function () {
+            console.log('done');
+        });
 
         ytdl(`http://www.youtube.com/watch?v=${videoId}`, { quality: qualityToDownload})
-            .pipe(fs.createWriteStream(tempFilename));
+            .pipe(writeStream);
     }
 })()
