@@ -22,6 +22,9 @@ const minimumLength = 20 * 60;
     });
 
     for (const {id: { videoId }, snippet: { thumbnails, title, publishedAt }} of items) {
+        if (!videoId) {
+            continue;
+        }
         // try to take the biggest one and go down from there
         const thumbnailUrl = thumbnails.maxres?.url || thumbnails.high?.url || thumbnails.medium?.url || thumbnails.standard?.url || thumbnails.default?.url;
 
