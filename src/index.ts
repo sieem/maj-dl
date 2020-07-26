@@ -49,6 +49,7 @@ const minimumLength = 20 * 60;
         const finalAudioPath = `./done/${title.replace(/[\/:*?"<>|]/g, '-')}.${fileExtension}`;
 
         if (existsSync(finalAudioPath)) {
+            console.log(title, 'already exists, skipping...');
             continue;
         }
 
