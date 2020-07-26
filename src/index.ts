@@ -18,7 +18,7 @@ const minimumLength = 20 * 60;
         key: process.env.YOUTUBE_KEY,
         channelId: process.env.CHANNEL_ID,
         order: 'date',
-        maxResults: 1
+        maxResults: 30
     });
 
     for (const {id: { videoId }, snippet: { thumbnails, title, publishedAt }} of items) {
