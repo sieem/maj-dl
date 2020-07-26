@@ -25,8 +25,8 @@ const minimumLength = 20 * 60;
         // try to take the biggest one and go down from there
         const thumbnailUrl = thumbnails.maxres?.url || thumbnails.high?.url || thumbnails.medium?.url || thumbnails.standard?.url || thumbnails.default?.url;
 
-        const { formats, length_seconds } = await ytdl.getInfo(videoId);
-        if (Number.parseInt(length_seconds) < minimumLength) {
+        const { formats, videoDetails: { lengthSeconds } } = await ytdl.getInfo(videoId);
+        if (Number.parseInt(lengthSeconds) < minimumLength) {
             continue;
         }
 
