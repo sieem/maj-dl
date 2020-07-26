@@ -1,4 +1,4 @@
-import { createWriteStream, readFileSync, writeFileSync, unlinkSync } from 'fs';
+import { createWriteStream, readFileSync, writeFileSync, unlinkSync, existsSync } from 'fs';
 import { get } from 'https';
 import * as ytdl from 'ytdl-core';
 import { write } from 'ffmetadata';
@@ -43,11 +43,18 @@ const minimumLength = 20 * 60;
         }
 
         const fileExtension = mimeTypeToDownload.includes('webm') ? 'opus' : 'mp4a';
+        const finalAudioPath = `./done/${title.replace(/:/g, '-')}.${fileExtension}`;
+
+        if (existsSync(finalAudioPath)) {
+            continue;
+        }
+
+        console.log('Downloading:', title);
 
         const tempAudioPath = `./tmp/${videoId}.${fileExtension}`;
         const tempThumbnailPath = `./tmp/${videoId}_thumb.jpg`;
 
-        get(thumbnailUrl, res => res.pipe(createWriteStream(tempThumbnailPath)))
+        get(thumbnailUrl, res => res.pipe(createWriteStream(tempThumbnailPath)));
         const writeStream = createWriteStream(tempAudioPath);
 
         ytdl(`http://www.youtube.com/watch?v=${videoId}`, { quality: qualityToDownload})
@@ -66,10 +73,10 @@ const minimumLength = 20 * 60;
             write(tempAudioPath, tags, function (err) {
                 if (err) console.error("Error writing metadata", err);
                 else {
-                    const finalAudioPath = `./done/${title.replace(/:/g, '-')}.${fileExtension}`;
                     writeFileSync(finalAudioPath, readFileSync(tempAudioPath));
                     unlinkSync(tempAudioPath);
                     unlinkSync(tempThumbnailPath);
+                    console.log('Done with:', title)
                 }
             });
 
