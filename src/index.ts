@@ -43,7 +43,7 @@ const minimumLength = 20 * 60;
         }
 
         const fileExtension = mimeTypeToDownload.includes('webm') ? 'opus' : 'mp4a';
-        const finalAudioPath = `./done/${title.replace(/:/g, '-')}.${fileExtension}`;
+        const finalAudioPath = `./done/${title.replace(/[\/:*?"<>|]/g, '-')}.${fileExtension}`;
 
         if (existsSync(finalAudioPath)) {
             continue;
