@@ -5,6 +5,7 @@ import { write } from 'ffmetadata';
 import * as moment from 'moment';
 import { google } from 'googleapis';
 import { config } from 'dotenv';
+import TrackService from './trackService';
 
 config();
 
@@ -13,6 +14,7 @@ const youtube = google.youtube('v3');
 const minimumLength = 20 * 60;
 
 (async () => {
+    const trackService = new TrackService();
     const { data: { items } } = await youtube.search.list({
         part: ['id', 'snippet'],
         key: process.env.YOUTUBE_KEY,
@@ -60,6 +62,20 @@ const minimumLength = 20 * 60;
         const tempAudioPath = `./tmp/${videoId}.${fileExtension}`;
         const tempThumbnailPath = `./tmp/${videoId}_thumb.jpg`;
 
+        const album = title.includes('CBS') ? 'Coffee Break Sessions' : title.includes('Guest Mix') ? 'Guest Mix' : title.includes('Live Stream') ? 'Live Stream' : 'On Vinyl';
+        const track = trackService.getTrackNumber(album);
+
+        const tags = {
+            title,
+            album,
+            track,
+            year: Number.parseInt(moment(publishedAt).format('YYYY')),
+            artist: 'My Analog Journal',
+            // APIC: tempThumbnailPath,
+        };
+
+        trackService.writeTrack(tags);
+
         get(thumbnailUrl, res => res.pipe(createWriteStream(tempThumbnailPath)));
         const writeStream = createWriteStream(tempAudioPath);
 
@@ -67,15 +83,6 @@ const minimumLength = 20 * 60;
             .pipe(writeStream);
 
         writeStream.on('finish', () => {
-            const album = title.includes('CBS') ? 'Coffee Break Sessions' : title.includes('Guest Mix') ? 'Guest Mix' : title.includes('Live Stream') ? 'Live Stream' : 'On Vinyl';
-            const tags = {
-                title,
-                album,
-                year: Number.parseInt(moment(publishedAt).format('YYYY')),
-                artist: 'My Analog Journal',
-                // APIC: tempThumbnailPath,
-            };
-
             write(tempAudioPath, tags, function (err) {
                 if (err) console.error("Error writing metadata", err);
                 else {
