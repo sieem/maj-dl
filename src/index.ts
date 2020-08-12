@@ -65,7 +65,7 @@ const minimumLength = 20 * 60;
             .pipe(writeStream);
 
         writeStream.on('finish', () => {
-            const album = title.includes('CBS') ? 'Coffee Break Sessions' : title.includes('Guest Mix') ? 'Guest Mix' : 'On Vinyl';
+            const album = title.includes('CBS') ? 'Coffee Break Sessions' : title.includes('Guest Mix') ? 'Guest Mix' : title.includes('Live Stream') ? 'Live Stream' : 'On Vinyl';
             const tags = {
                 title,
                 album,
