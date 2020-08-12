@@ -21,7 +21,9 @@ const minimumLength = 20 * 60;
         maxResults: 30
     });
 
-    for (const {id: { videoId }, snippet: { thumbnails, title, publishedAt }} of items) {
+    const reversedVideo = items.reverse();
+
+    for (const { id: { videoId }, snippet: { thumbnails, title, publishedAt } } of reversedVideo) {
         if (!videoId) {
             continue;
         }
